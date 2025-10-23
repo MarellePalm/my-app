@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import Button from '@/components/ui/button/Button.vue';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import Pagination from '@/components/ui/pagination/Pagination.vue';
+import PaginationEllipsis from '@/components/ui/pagination/PaginationEllipsis.vue';
+import PaginationFirst from '@/components/ui/pagination/PaginationFirst.vue';
+import PaginationPrevious from '@/components/ui/pagination/PaginationPrevious.vue';
 import Table from '@/components/ui/table/Table.vue';
 import TableBody from '@/components/ui/table/TableBody.vue';
 import TableCaption from '@/components/ui/table/TableCaption.vue';
@@ -13,6 +17,7 @@ import { index } from '@/routes/posts';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { MoreVertical } from 'lucide-vue-next';
+import { PaginationList, PaginationListItem } from 'reka-ui';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,6 +25,29 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: index().url,
     },
 ];
+interface PaginationLink {
+    url: string | null;
+    label: string;
+    page?: number | null;
+    active: boolean;
+}
+
+interface PaginatedResponse {
+    current_page: number;
+    data: Post[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: PaginationLink[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+}
+
 type Post = {
     id: number;
     title: string;
@@ -33,7 +61,7 @@ type Post = {
 };
 
 defineProps<{
-    posts: Post[];
+    posts: PaginatedResponse;
 }>();
 </script>
 
@@ -43,11 +71,6 @@ defineProps<{
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <pre>{{ posts }}</pre>
-            <ul>
-                <li v-for="(post, index) in posts" :key="index">
-                    {{ post.title }}
-                </li>
-            </ul>
             <Table>
                 <TableCaption>A list of your recent blog posts.</TableCaption>
                 <TableHeader>
@@ -64,7 +87,7 @@ defineProps<{
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow v-for="(post, index) in posts" :key="index">
+                    <TableRow v-for="(post, index) in posts.data" :key="index">
                         <TableCell class="font-medium">{{ post.id }}</TableCell>
                         <TableCell>{{ post.title }}</TableCell>
                         <TableCell>{{ post.author }}</TableCell>
@@ -91,6 +114,24 @@ defineProps<{
                     </TableRow>
                 </TableBody>
             </Table>
+            <Pagination v-slot="{ page }" :items-per-page="10" :total="30" :default-page="2">
+                <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+                    <PaginationFirst />
+                    <PaginationPrevious />
+
+                    <template v-for="(item, index) in items">
+                        <PaginationListItem v-if="item.type === 'page'" :key="index" :value="item.value" as-child>
+                            <Button class="h-10 w-10 p-0" :variant="item.value === page ? 'default' : 'outline'">
+                                {{ item.value }}
+                            </Button>
+                        </PaginationListItem>
+                        <PaginationEllipsis v-else :key="item.type" :index="index" />
+                    </template>
+
+                    <PaginationNext />
+                    <PaginationLast />
+                </PaginationList>
+            </Pagination>
         </div>
     </AppLayout>
 </template>
