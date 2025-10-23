@@ -4,6 +4,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import Pagination from '@/components/ui/pagination/Pagination.vue';
 import PaginationEllipsis from '@/components/ui/pagination/PaginationEllipsis.vue';
 import PaginationFirst from '@/components/ui/pagination/PaginationFirst.vue';
+import PaginationLast from '@/components/ui/pagination/PaginationLast.vue';
+import PaginationNext from '@/components/ui/pagination/PaginationNext.vue';
 import PaginationPrevious from '@/components/ui/pagination/PaginationPrevious.vue';
 import Table from '@/components/ui/table/Table.vue';
 import TableBody from '@/components/ui/table/TableBody.vue';
@@ -15,7 +17,7 @@ import TableRow from '@/components/ui/table/TableRow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { index } from '@/routes/posts';
 import { BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { MoreVertical } from 'lucide-vue-next';
 import { PaginationList, PaginationListItem } from 'reka-ui';
 
@@ -70,7 +72,7 @@ defineProps<{
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <pre>{{ posts }}</pre>
+            
             <Table>
                 <TableCaption>A list of your recent blog posts.</TableCaption>
                 <TableHeader>
@@ -114,7 +116,12 @@ defineProps<{
                     </TableRow>
                 </TableBody>
             </Table>
-            <Pagination v-slot="{ page }" :items-per-page="10" :total="30" :default-page="2">
+            <Pagination 
+            v-slot="{ page }" 
+            :items-per-page="posts.per_page" 
+            :total="posts.total" 
+            class="mt-2 w-full" 
+            @update:page="(page) => router.get(index().url, {page: page})">
                 <PaginationList v-slot="{ items }" class="flex items-center gap-1">
                     <PaginationFirst />
                     <PaginationPrevious />
