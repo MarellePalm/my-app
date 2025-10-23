@@ -118,6 +118,7 @@ defineProps<{
             </Table>
             <Pagination 
             v-slot="{ page }" 
+            :page="posts.current_page"
             :items-per-page="posts.per_page" 
             :total="posts.total" 
             class="mt-2 w-full" 
