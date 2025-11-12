@@ -19,10 +19,12 @@ import { index } from '@/routes/posts';
 import { edit } from '@/routes/posts';
 import { destroy } from '@/routes/posts';
 
+
 import { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import { MoreVertical } from 'lucide-vue-next';
 import { PaginationList, PaginationListItem } from 'reka-ui';
+
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -122,7 +124,7 @@ const handleDelete = (id: number) => {
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
-                                        <DropdownMenuItem>View</DropdownMenuItem>
+                                        <DropdownMenuItem as="button" @click="router.get(`/posts/${post.id}`)">View</DropdownMenuItem>
                                         <DropdownMenuItem as="button" @click="() => router.get(edit(post.id).url)">Edit</DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem class="text-destruvtive" as="button" @click="()=> handleDelete(post.id)">Delete</DropdownMenuItem>
