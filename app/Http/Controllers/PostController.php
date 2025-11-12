@@ -69,6 +69,8 @@ class PostController extends Controller
         $validated =$request -> validate([
             'title' => 'required|max:255',
             'content' => 'required',
+            'author' => 'required|string|max:255',
+            'published' => 'boolean',
         ]);
 
         $post -> update($validated);
