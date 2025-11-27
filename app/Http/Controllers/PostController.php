@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Models\Author;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -13,8 +14,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Inertia:: render('posts/Index', [
-            'posts'=> Post:: paginate(30),
+        return Inertia::render('posts/Index', [
+            'posts' => Post::with('author:id,first_name,last_name')->paginate(30),
         ]);
     }
 
@@ -23,7 +24,10 @@ class PostController extends Controller
      */
     public function create()
     {
-        return Inertia::render('posts/Create');
+        return Inertia::render('posts/Create', [
+            'authors' => Author::all()->mapWithKeys(fn($author) => [$author->id => $author->first_name . ' ' . $author->last_name]),
+        ]); 
+
     }
 
     /**
@@ -34,7 +38,7 @@ class PostController extends Controller
        Post::create($request->validate([
         'title'=>'required|string|max:255',
         'content'=>'required|string',
-        'author'=> 'required|string|max:255',
+        'author_id'=> 'required|integer|exists:authors,id',
         'published'=> 'boolean',
        ]));
 
@@ -48,7 +52,12 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return Inertia::render('posts/View',[
+        $post->loadMissing([
+            'author:id,first_name,last_name',
+            'comments.user:id,name', // eeldan, et kasutajal on "name" veerg
+        ]);
+
+        return Inertia::render('posts/View', [
             'post' => $post,
         ]);
     }
@@ -60,6 +69,7 @@ class PostController extends Controller
     {
         return Inertia::render('posts/Edit', [
             'post' => $post,
+            'authors' => Author::all()->mapWithKeys(fn($author) => [$author->id => $author->first_name . ' ' . $author->last_name])
         ]);
     }
 
@@ -71,7 +81,7 @@ class PostController extends Controller
         $validated =$request -> validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'author' => 'required|string|max:255',
+            'author_id' => 'required|exists:authors,id',
             'published' => 'boolean',
         ]);
 

@@ -56,16 +56,29 @@ interface PaginatedResponse {
     total: number;
 }
 
-type Post = {
+export type Post = {
     id: number;
     title: string;
     content: string;
-    author: string;
+    author_id: number;
     published: boolean;
     created_at: string;
     updated_at: string;
     created_at_formated: string;
     updated_at_formated: string;
+    author:{
+        id: number;
+        first_name: string;
+        last_name: string;
+    };
+    comments?: [
+        {
+        id:number;
+        post_id:number;
+        user_id:number;
+        content:string;
+        }
+    ]
 };
 
 defineProps<{
@@ -111,7 +124,7 @@ const handleDelete = (id: number) => {
                     <TableRow v-for="(post, index) in posts.data" :key="index">
                         <TableCell class="font-medium">{{ post.id }}</TableCell>
                         <TableCell>{{ post.title }}</TableCell>
-                        <TableCell>{{ post.author }}</TableCell>
+                        <TableCell>{{ post.author.first_name}} {{ post.author.last_name}}</TableCell>
                         <TableCell class="text-right">{{ post.created_at_formated }}</TableCell>
                         <TableCell class="text-right">{{ post.updated_at_formated }}</TableCell>
                         <TableCell class="text-right">{{ post.published }}</TableCell>

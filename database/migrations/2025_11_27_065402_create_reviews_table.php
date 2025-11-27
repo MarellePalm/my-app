@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Author;
 
 return new class extends Migration
 {
@@ -12,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Author::class)->constrained()-> cascadeOnDelete();
-            $table->string('title');
-            $table->text('content');
-            $table->boolean('published')->default(false);
+            $table->foreignId('product_id')
+                  ->cascadeOnDelete();
+            $table->string('customer_name');
+            $table->integer('rating');
+            $table->string('comment');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('reviews');
     }
 };

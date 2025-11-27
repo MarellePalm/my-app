@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Author;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AuthorController extends Controller
 {
@@ -12,7 +13,9 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia:: render('authors/Index',[
+            'authors'=> Author:: paginate(30),
+        ]);
     }
 
     /**
