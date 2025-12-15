@@ -52,13 +52,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post->loadMissing([
-            'author:id,first_name,last_name',
-            'comments.user:id,name', // eeldan, et kasutajal on "name" veerg
-        ]);
-
+       
         return Inertia::render('posts/View', [
-            'post' => $post,
+            'post' => $post ->loadMissing('author', 'comments.user'),
         ]);
     }
 

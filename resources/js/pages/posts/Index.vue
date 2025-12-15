@@ -55,7 +55,21 @@ interface PaginatedResponse {
     to: number;
     total: number;
 }
+type Comment ={
+    id:number;
+    post_id:number;
+    user_id:number;
+    content: string;
+    created_at_formated: string;
+    updated_at_formated: string;
+    user: User;
+}
 
+type User ={
+    id:number;
+    name:string;
+    email:string;
+}
 export type Post = {
     id: number;
     title: string;
@@ -71,14 +85,7 @@ export type Post = {
         first_name: string;
         last_name: string;
     };
-    comments?: [
-        {
-        id:number;
-        post_id:number;
-        user_id:number;
-        content:string;
-        }
-    ]
+    comments?: Comment[];
 };
 
 defineProps<{

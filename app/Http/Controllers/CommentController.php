@@ -17,6 +17,16 @@ class CommentController extends Controller
             'content' => ['required', 'string', 'max:1000'],
         ]);
 
+        $request->validate([
+            'content'=>'required|max:255'
+        ]);
+        $post->comments()->create([
+            'user_id'=> $request->user()->id,
+            'content'=>$request->content
+        ]);
+
+        return redirect()->back();
+       
         Comment::create([
             'user_id' => $request->user()->id,
             'post_id' => $post->id,
