@@ -11,6 +11,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 
 
+use App\Http\Controllers\MarkerController;
+
+
+Route::post('/markers', [MarkerController::class, 'store']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome');

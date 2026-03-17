@@ -27,7 +27,8 @@ class DashboardController extends Controller
         });
        
         return Inertia::render('Dashboard', [
-            'weather' => $value
+            'weather' => $value,
+            'markers' => \App\Models\Marker::all(),
         ]);
     }
 }

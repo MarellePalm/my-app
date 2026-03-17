@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Marker;
+
+class MarkerController extends Controller
+{
+    public function store(Request $request)
+    {
+        Marker::create([
+        'name' => $request->name,
+        'lat' => $request->lat,
+        'lng' => $request->lng,
+        'description' => $request->description,
+        'added' => now(),
+        'edited' => now(),
+    ]);
+
+     return redirect()->back();
+    }
+}
