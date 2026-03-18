@@ -141,7 +141,7 @@ map.on('popupopen', (event: L.PopupEvent) => {
   <Dialog :open="!!selectedLocation" @update:open="closeDialog">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Salvesta uus marker</DialogTitle>
+        <DialogTitle>{{ editingMarker ? 'Muuda markerit' : 'Salvesta uus marker' }}</DialogTitle>
         <DialogDescription>
           Lisa nimi ja kirjeldus
         </DialogDescription>
