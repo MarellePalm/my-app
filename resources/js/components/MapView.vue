@@ -19,6 +19,7 @@ const closeDialog = () => {
 
 const handleSuccess = () => {
   selectedLocation.value = null
+  editingMarker.value = null
   window.location.reload()
 };
 
@@ -31,11 +32,8 @@ const mapClick= (e:PointerEvent)=> {
 };
 
 const deleteMarker = (id: number) => {
-  console.log('kustutan ID:', id)
-
   router.delete(`/markers/${id}`, {
     onSuccess: () => {
-      console.log('kustutamine OK')
       window.location.reload()
     },
     onError: (err) => {
@@ -43,8 +41,6 @@ const deleteMarker = (id: number) => {
     }
   })
 }
-
-
 
 const props = defineProps<{
   markers: {
@@ -57,6 +53,29 @@ const props = defineProps<{
     edited: string | null
   }[]
 }>()
+
+const editingMarker = ref<{
+  id: number
+  name: string
+  lat: number
+  lng: number
+  description: string | null
+} | null>(null)
+
+const editMarker = (marker: {
+  id: number
+  name: string
+  lat: number
+  lng: number
+  description: string | null
+}) => {
+  editingMarker.value = marker
+
+  selectedLocation.value = {
+    lat: marker.lat,
+    lng: marker.lng
+  }
+}
 
 onMounted(() => {
   const map = L.map(mapEl.value, {
@@ -75,6 +94,7 @@ onMounted(() => {
     .bindPopup(`<b>${marker.name}</b><br>${marker.description ?? ""}<br>
   Lat: ${marker.lat}<br>
   Lng: ${marker.lng} <br><br>
+  <button class="edit-marker-btn" data-id="${marker.id}" style="padding: 4px 8px; border: 1px solid #333; background: #f8f8f8; cursor: pointer; margin-right: 6px;">Muuda</button>
   <button class="delete-marker-btn" data-id="${marker.id}" style="border: 1px solid #ccc; padding: 5px 10px; background-color: #f0f0f0; cursor: pointer;">Kustuta</button>
   `)
   
@@ -83,6 +103,20 @@ onMounted(() => {
 map.on('popupopen', (event: L.PopupEvent) => {
   const popupElement = event.popup.getElement()
   if (!popupElement) return
+
+  const editButton = popupElement.querySelector('.edit-marker-btn') as HTMLButtonElement | null
+
+  if (editButton) {
+    editButton.addEventListener('click', () => {
+      const markerId = editButton.getAttribute('data-id')
+      if (markerId) {
+        const marker = props.markers.find(m => m.id === Number(markerId))
+        if (marker) {
+        editMarker(marker)
+      }
+    }
+  })
+}
 
   const deleteButton = popupElement.querySelector('.delete-marker-btn') as HTMLButtonElement | null
 
@@ -111,11 +145,13 @@ map.on('popupopen', (event: L.PopupEvent) => {
         <DialogDescription>
           Lisa nimi ja kirjeldus
         </DialogDescription>
-        <Form method="post" action="/markers"  @success="handleSuccess">
+        <Form :method="editingMarker ? 'put' : 'post'"
+          :action="editingMarker ? `/markers/${editingMarker.id}` : '/markers'"
+          @success="handleSuccess">
            <div class="grid grid-cols-2 gap-4">
             <div class="col-span-2">
                 <Label class="mb-1.5" for="name">Name</Label>
-                <Input name="name"/>
+                <Input name="name" :default-value="editingMarker?.name"/>
             </div>
             <div>
                 <Label class="mb-1.5" for="lat">Lat</Label>
@@ -127,8 +163,8 @@ map.on('popupopen', (event: L.PopupEvent) => {
             </div>
             <input type="hidden" name="lat" :value="selectedLocation?.lat" />
             <input type="hidden" name="lng" :value="selectedLocation?.lng" />
-            <Textarea name="description" class="col-span-2"></Textarea>
-            <Button class="col-span-2" type="submit"> Salvesta </Button>
+            <Textarea name="description" class="col-span-2" :default-value="editingMarker?.description"></Textarea>
+            <Button class="col-span-2" type="submit"> {{ editingMarker ? 'Salvesta muudatused' : 'Salvesta' }} </Button>
            </div>
         </Form>
       </DialogHeader>
