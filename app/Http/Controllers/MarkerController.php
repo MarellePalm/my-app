@@ -20,4 +20,11 @@ class MarkerController extends Controller
 
      return redirect()->back();
     }
+
+    public function destroy($id)
+    {
+    \App\Models\Marker::findOrFail($id)->delete();
+
+    return redirect()->back();
+    }
 }

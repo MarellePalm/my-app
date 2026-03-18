@@ -15,6 +15,7 @@ use App\Http\Controllers\MarkerController;
 
 
 Route::post('/markers', [MarkerController::class, 'store']);
+Route::delete('/markers/{marker}', [MarkerController::class, 'destroy']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome');

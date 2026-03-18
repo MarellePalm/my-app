@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { router } from "@inertiajs/vue3";
 import { ref, onMounted } from "vue"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
@@ -9,8 +10,17 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 
-const mapEl = ref(null)
-const selectedLocation = ref<{ lat: number; lng: number }>();
+const mapEl = ref(null);
+const selectedLocation = ref<{ lat: number; lng: number } | null>(null);
+
+const closeDialog = () => {
+  selectedLocation.value = null
+};
+
+const handleSuccess = () => {
+  selectedLocation.value = null
+  window.location.reload()
+};
 
 const mapClick= (e:PointerEvent)=> {
     selectedLocation.value = {
@@ -18,9 +28,23 @@ const mapClick= (e:PointerEvent)=> {
         lng: e.latlng.lng
     
     }
-    
-
 };
+
+const deleteMarker = (id: number) => {
+  console.log('kustutan ID:', id)
+
+  router.delete(`/markers/${id}`, {
+    onSuccess: () => {
+      console.log('kustutamine OK')
+      window.location.reload()
+    },
+    onError: (err) => {
+      console.log('viga kustutamisel', err)
+    }
+  })
+}
+
+
 
 const props = defineProps<{
   markers: {
@@ -48,7 +72,29 @@ onMounted(() => {
   props.markers.forEach((marker) => {
   L.marker([marker.lat, marker.lng])
     .addTo(map)
-    .bindPopup(`<b>${marker.name}</b><br>${marker.description ?? ""}`)
+    .bindPopup(`<b>${marker.name}</b><br>${marker.description ?? ""}<br>
+  Lat: ${marker.lat}<br>
+  Lng: ${marker.lng} <br><br>
+  <button class="delete-marker-btn" data-id="${marker.id}" style="border: 1px solid #ccc; padding: 5px 10px; background-color: #f0f0f0; cursor: pointer;">Kustuta</button>
+  `)
+  
+})
+
+map.on('popupopen', (event: L.PopupEvent) => {
+  const popupElement = event.popup.getElement()
+  if (!popupElement) return
+
+  const deleteButton = popupElement.querySelector('.delete-marker-btn') as HTMLButtonElement | null
+
+  if (deleteButton) {
+    deleteButton.addEventListener('click', () => {
+      console.log('Delete button clicked')
+      const markerId = deleteButton.getAttribute('data-id')
+      if (markerId) {
+        deleteMarker(Number(markerId))
+      }
+    })
+  }
 })
 });
 
@@ -58,14 +104,14 @@ onMounted(() => {
 
 <template>
   <div ref="mapEl" class="z-10 h-full"></div>
-  <Dialog :open="!!selectedLocation" @update:open="selectedLocation=undefined">
+  <Dialog :open="!!selectedLocation" @update:open="closeDialog">
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Salvesta uus marker</DialogTitle>
         <DialogDescription>
           Lisa nimi ja kirjeldus
         </DialogDescription>
-        <Form method="post" action="/markers">
+        <Form method="post" action="/markers"  @success="handleSuccess">
            <div class="grid grid-cols-2 gap-4">
             <div class="col-span-2">
                 <Label class="mb-1.5" for="name">Name</Label>
