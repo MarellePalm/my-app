@@ -35,16 +35,30 @@ const submit = () => {
 };
 
 const deleteComment = (id: number) => {
-    if (confirm('Kas kustutada kommentaar?')) {
-        router.delete(`/comments/${id}`, {
-            onSuccess: () => {
-                router.reload();
-            },
-        });
+    if (!confirm('Kas oled kindel, et soovid kommentaari kustutada?')) {
+        return;
     }
+
+    router.delete(`/comments/${id}`, {
+        preserveScroll: true,
+    });
 };
 
-const page = usePage();
+const page = usePage() as {
+    props: {
+        auth:{
+            user?: {
+                id: number;
+                name: string;
+                is_admin?: boolean;
+            };
+        };
+        flash?: {
+            success?: string;
+            error?: string;
+        };
+    };
+};
 </script>
 
 <template>
@@ -94,6 +108,13 @@ const page = usePage();
                         {{ props.post.published ? 'Published' : 'Draft' }}
                     </span>
                 </div>
+                <div v-if="page.props.flash?.error" class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-2 text-red-700">
+                    {{ page.props.flash.error }}
+                </div>
+
+                <div v-if="page.props.flash?.success" class="mb-4 rounded border border-green-300 bg-green-50 px-4 py-2 text-green-700">
+                    {{ page.props.flash.success }}
+                </div>
                 <ul class="mt-6 space-y-4 p-5">
                     <li
                         v-for="comment in post.comments"
@@ -128,23 +149,10 @@ const page = usePage();
 
                         <!-- Comment content -->
 
-                        <div
-                            v-if="page.props.flash && page.props.flash.error"
-                            class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-2 text-red-700"
-                        >
-                            {{ page.props.flash.error }}
-                        </div>
-
-                        <div
-                            v-if="page.props.flash && page.props.flash.success"
-                            class="mb-4 rounded border border-green-300 bg-green-50 px-4 py-2 text-green-700"
-                        >
-                            {{ page.props.flash.success }}
-                        </div>
                         <p class="leading-relaxed text-gray-700 dark:text-gray-300">
                             {{ comment.content }}
                         </p>
-                        <div class="mt-3 flex justify-end">
+                        <div v-if="page.props.auth.user?.is_admin" class="mt-3 flex justify-end">
                             <button @click="deleteComment(comment.id)" class="text-sm text-red-500 hover:text-red-700 hover:underline">
                                 Kustuta
                             </button>
