@@ -41,6 +41,16 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-       
+       $user = auth()->user();
+
+        if (!$user || $user->role !== 'admin') {
+            return back()->with('error', 'Ainult admin saab kustutada');
+        }
+
+        $comment->delete();
+
+        return response()->json([
+            'message' => 'Kommentaar kustutatud'
+        ]);
     }
 }

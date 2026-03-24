@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import Button from '@/components/ui/button/Button.vue';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { add } from '@/routes/comments';
 import { index, show } from '@/routes/posts';
 import { BreadcrumbItem } from '@/types';
+import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Post } from './Index.vue';
-import { useForm } from '@inertiajs/vue3';
-import { add } from '@/routes/comments';
-import { Textarea } from '@/components/ui/textarea';
-import Button from '@/components/ui/button/Button.vue';
 
 const props = defineProps<{ post: Post }>();
 
@@ -21,18 +21,30 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const form= useForm({
-  content: "",
+const form = useForm({
+    content: '',
 });
 
-const submit= ()=>{
-  form.post(add(props.post.id).url,{
-    preserveScroll:true,
-    onSuccess:()=>{
-      form.reset();
-    },
-  });
+const submit = () => {
+    form.post(add(props.post.id).url, {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+        },
+    });
 };
+
+const deleteComment = (id: number) => {
+    if (confirm('Kas kustutada kommentaar?')) {
+        router.delete(`/comments/${id}`, {
+            onSuccess: () => {
+                router.reload();
+            },
+        });
+    }
+};
+
+const page = usePage();
 </script>
 
 <template>
@@ -115,19 +127,38 @@ const submit= ()=>{
                         </div>
 
                         <!-- Comment content -->
+
+                        <div
+                            v-if="page.props.flash && page.props.flash.error"
+                            class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-2 text-red-700"
+                        >
+                            {{ page.props.flash.error }}
+                        </div>
+
+                        <div
+                            v-if="page.props.flash && page.props.flash.success"
+                            class="mb-4 rounded border border-green-300 bg-green-50 px-4 py-2 text-green-700"
+                        >
+                            {{ page.props.flash.success }}
+                        </div>
                         <p class="leading-relaxed text-gray-700 dark:text-gray-300">
-                            {{comment.content }}
+                            {{ comment.content }}
                         </p>
+                        <div class="mt-3 flex justify-end">
+                            <button @click="deleteComment(comment.id)" class="text-sm text-red-500 hover:text-red-700 hover:underline">
+                                Kustuta
+                            </button>
+                        </div>
                     </li>
                 </ul>
                 <div class="pb-6">
-                  Comment
-                  <form id="comment-form" @submit.prevent="submit">
-                    <Textarea v-model="form.content"></Textarea>
-                  </form>
-                  <div class="flex mt-4 justify-end">
-                    <Button type="submit" form="comment-form">Submit</Button>
-                  </div>
+                    Comment
+                    <form id="comment-form" @submit.prevent="submit">
+                        <Textarea v-model="form.content"></Textarea>
+                    </form>
+                    <div class="mt-4 flex justify-end">
+                        <Button type="submit" form="comment-form">Submit</Button>
+                    </div>
                 </div>
             </div>
         </div>

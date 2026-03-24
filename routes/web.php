@@ -27,8 +27,10 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::resource('posts', PostController::class);
     Route::resource('authors', AuthorController::class);
     Route::post('/add-comment/{post}', [CommentController:: class, 'store']) ->name('comments.add');
-
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 });
+
+
 
 
 
