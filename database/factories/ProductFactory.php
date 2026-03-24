@@ -20,8 +20,9 @@ class ProductFactory extends Factory
             'name' => $this->faker->word(),
             'description' => $this->faker->text(),
             'price' => $this->faker->randomFloat(2, 1, 1000),
-            'sku' => $this->faker->unique()->regexify('[A-Z]{5}[0-4]{5}'),
-            'stock_quantity' => $this-> faker-> numberBetween(0, 1000)
+            'sku' => $this->faker->unique()->regexify('[A-Z]{5}[0-9]{5}'),
+            'stock_quantity' => $this-> faker-> numberBetween(0, 100),
+            'image' => 'https://via.placeholder.com/300x200?text=' . $this->faker->word(),
         ];
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProductController;
 use App\Mail\Timetable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -28,6 +29,7 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::resource('authors', AuthorController::class);
     Route::post('/add-comment/{post}', [CommentController:: class, 'store']) ->name('comments.add');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+    Route::get('/shop', [ProductController::class, 'index'])->name('shop.index');
 });
 
 
@@ -68,6 +70,8 @@ Route::get('/mailable', function () {
 
     return new Timetable($timetableEvents, $startDate, $endDate);
 });
+
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

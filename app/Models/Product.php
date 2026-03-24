@@ -17,7 +17,8 @@ class Product extends Model
         'description',
         'price',
         'sku',
-        'stock_quantity'
+        'stock_quantity',
+        'imgage',
     ];
 
     protected $appends = [

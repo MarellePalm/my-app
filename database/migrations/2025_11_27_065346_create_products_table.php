@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->decimal('price');
+            $table->decimal('price', 8, 2);
             $table->string('sku')-> unique();
             $table->integer('stock_quantity')-> default(0);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
