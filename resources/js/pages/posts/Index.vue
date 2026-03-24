@@ -117,6 +117,13 @@ const handleDelete = (id: number) => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div class="mb-4 flex items-center justify-between">
+            <h1 class="text-xl font-semibold">Posts</h1>
+
+            <Button @click="router.get('/posts/create')">
+                + Add New Post
+            </Button>
+        </div>
             
             <Table>
                 <TableCaption>A list of your recent blog posts.</TableCaption>
