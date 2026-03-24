@@ -110,7 +110,7 @@ const submit= ()=>{
 
                             <!-- Date -->
                             <span class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ new Date(comment.created_at_formated).toLocaleString() }}
+                                {{ new Date(comment.created_at_formatted).toLocaleString() }}
                             </span>
                         </div>
 

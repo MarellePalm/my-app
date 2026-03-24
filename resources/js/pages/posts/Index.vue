@@ -60,8 +60,8 @@ type Comment ={
     post_id:number;
     user_id:number;
     content: string;
-    created_at_formated: string;
-    updated_at_formated: string;
+    created_at_formatted: string;
+    updated_at_formatted: string;
     user: User;
 }
 
@@ -78,8 +78,8 @@ export type Post = {
     published: boolean;
     created_at: string;
     updated_at: string;
-    created_at_formated: string;
-    updated_at_formated: string;
+    created_at_formatted: string;
+    updated_at_formatted: string;
     author:{
         id: number;
         first_name: string;
@@ -92,6 +92,12 @@ defineProps<{
     posts: PaginatedResponse;
 }>();
 
+const formatDate = (date: string) => {
+    return new Date(date).toLocaleString('et-EE', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+    });
+};
 
 const handleDelete = (id: number) => {
   if (confirm('Oled kindel, et tahad selle postituse kustutada?')) {
@@ -132,8 +138,8 @@ const handleDelete = (id: number) => {
                         <TableCell class="font-medium">{{ post.id }}</TableCell>
                         <TableCell>{{ post.title }}</TableCell>
                         <TableCell>{{ post.author.first_name}} {{ post.author.last_name}}</TableCell>
-                        <TableCell class="text-right">{{ post.created_at_formated }}</TableCell>
-                        <TableCell class="text-right">{{ post.updated_at_formated }}</TableCell>
+                        <TableCell class="text-right">{{ formatDate(post.created_at) }}</TableCell>
+                        <TableCell class="text-right">{{ formatDate(post.updated_at) }}</TableCell>
                         <TableCell class="text-right">{{ post.published }}</TableCell>
                         <TableCell>
                             <div class="flex justify-end">
