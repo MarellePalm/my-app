@@ -88,7 +88,7 @@ const submit = () => {
                         <Button type="submit">Save</Button>
                     </div>
                 </form>
-                <pre>{{ form }}</pre>
+                
             </div>
         </div>
     </AppLayout>
