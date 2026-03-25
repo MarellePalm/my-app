@@ -35,7 +35,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 const form = useForm({
     title: props.post.title,
     content: props.post.content,
-    author_id: String (props.post.author_id),
     published: props.post.published,
 });
 
@@ -64,22 +63,7 @@ const submit = () => {
                             <Textarea class="mt-1" id="content" v-model="form.content" />
                             <InputError :message="form.errors.content" />
                         </div>
-                        <div>
-                            <Label for="author">Author</Label>
-                                  <Select v-model="form.author_id">
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select an author" />
-                                    </SelectTrigger>
-                                    <SelectContent class="w-(--reka-select-trigger-width)">
-                                      <SelectGroup>
-                                        <SelectItem v-for="(name, id) in authors" :key="id" :value="id"> {{ name }}  </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                
-                                <!-- <Input class="mt-1" id="author_id" v-model="form.author_id" /> -->
-                                <InputError :message="form.errors.author_id"/>
-                        </div>
+                       
                         <div class="mt-4 flex items-center space-x-2">
                             <Switch v-model="form.published" id="published" />
                             <Label for="published">Published</Label>
