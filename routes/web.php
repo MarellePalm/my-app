@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 use App\Mail\Timetable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -30,6 +31,10 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::post('/add-comment/{post}', [CommentController:: class, 'store']) ->name('comments.add');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
     Route::get('/shop', [ProductController::class, 'index'])->name('shop.index');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/update/{product}', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
 });
 
 
