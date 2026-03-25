@@ -28,10 +28,14 @@ const props = defineProps<{
     }[];
 }>();
 
-const searchCity = ref(props.city);
+const searchCity = ref('');
 function searchWeather() {
     router.get('/dashboard', {
         city: searchCity.value,
+    }, {
+        onSuccess: () => {
+            searchCity.value = ''
+        }
     });
 }
 </script>
