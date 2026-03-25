@@ -25,13 +25,9 @@ defineProps<{
             <h1 class="mb-6 text-3xl font-bold">E-pood</h1>
 
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                <div
-                    v-for="product in products"
-                    :key="product.id"
-                    class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
-                >
+                <div v-for="product in products" :key="product.id" class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
                     <img
-                        :src="product.image ?? 'https://via.placeholder.com/300x200?text=No+Image'"
+                        :src="`https://picsum.photos/seed/product-${product.id}/600/400`"
                         :alt="product.name"
                         class="h-48 w-full object-cover"
                     />
@@ -51,20 +47,10 @@ defineProps<{
 
                         <div class="mt-4 flex items-center gap-2">
                             <label class="text-sm text-gray-600">Kogus:</label>
-                            <input
-                                type="number"
-                                min="1"
-                                :max="product.stock_quantity"
-                                value="1"
-                                class="w-20 rounded-md border px-2 py-1 text-sm"
-                            />
+                            <input type="number" min="1" :max="product.stock_quantity" value="1" class="w-20 rounded-md border px-2 py-1 text-sm" />
                         </div>
 
-                        <button
-                            class="mt-4 w-full rounded-lg bg-black px-4 py-2 text-white transition hover:opacity-90"
-                        >
-                            Lisa ostukorvi
-                        </button>
+                        <button class="mt-4 w-full rounded-lg bg-black px-4 py-2 text-white transition hover:opacity-90">Lisa ostukorvi</button>
                     </div>
                 </div>
             </div>
