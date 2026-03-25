@@ -15,17 +15,12 @@ import TableHead from '@/components/ui/table/TableHead.vue';
 import TableHeader from '@/components/ui/table/TableHeader.vue';
 import TableRow from '@/components/ui/table/TableRow.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { index } from '@/routes/posts';
-import { edit } from '@/routes/posts';
-import { destroy } from '@/routes/posts';
-
+import { destroy, edit, index } from '@/routes/posts';
 
 import { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import { MoreVertical } from 'lucide-vue-next';
 import { PaginationList, PaginationListItem } from 'reka-ui';
-
-
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -55,21 +50,21 @@ interface PaginatedResponse {
     to: number;
     total: number;
 }
-type Comment ={
-    id:number;
-    post_id:number;
-    user_id:number;
+type Comment = {
+    id: number;
+    post_id: number;
+    user_id: number;
     content: string;
     created_at_formatted: string;
     updated_at_formatted: string;
     user: User;
-}
+};
 
-type User ={
-    id:number;
-    name:string;
-    email:string;
-}
+type User = {
+    id: number;
+    name: string;
+    email: string;
+};
 export type Post = {
     id: number;
     title: string;
@@ -80,7 +75,7 @@ export type Post = {
     updated_at: string;
     created_at_formatted: string;
     updated_at_formatted: string;
-    author:{
+    author: {
         id: number;
         first_name: string;
         last_name: string;
@@ -95,20 +90,19 @@ defineProps<{
 const formatDate = (date: string) => {
     return new Date(date).toLocaleString('et-EE', {
         dateStyle: 'medium',
-        timeStyle: 'short'
+        timeStyle: 'short',
     });
 };
 
 const handleDelete = (id: number) => {
-  if (confirm('Oled kindel, et tahad selle postituse kustutada?')) {
-    router.delete(destroy(id).url, {
-      onSuccess: () => {
-        console.log(`Post ${id} kustutatud`);
-        router.reload();
-        
-      },
-    });
-  }
+    if (confirm('Oled kindel, et tahad selle postituse kustutada?')) {
+        router.delete(destroy(id).url, {
+            onSuccess: () => {
+                console.log(`Post ${id} kustutatud`);
+                router.reload();
+            },
+        });
+    }
 };
 </script>
 
@@ -118,13 +112,11 @@ const handleDelete = (id: number) => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <div class="mb-4 flex items-center justify-between">
-            <h1 class="text-xl font-semibold">Posts</h1>
+                <h1 class="text-xl font-semibold">Posts</h1>
 
-            <Button @click="router.get('/posts/create')">
-                + Add New Post
-            </Button>
-        </div>
-            
+                <Button @click="router.get('/posts/create')"> + Add New Post </Button>
+            </div>
+
             <Table>
                 <TableCaption>A list of your recent blog posts.</TableCaption>
                 <TableHeader>
@@ -144,7 +136,10 @@ const handleDelete = (id: number) => {
                     <TableRow v-for="(post, index) in posts.data" :key="index">
                         <TableCell class="font-medium">{{ post.id }}</TableCell>
                         <TableCell>{{ post.title }}</TableCell>
-                        <TableCell>{{ post.author.first_name}} {{ post.author.last_name}}</TableCell>
+                        <TableCell
+                            ><span v-if="post.author"> {{ post.author.first_name }} {{ post.author.last_name }} </span>
+                            <span v-else> Autor puudub </span>
+                        </TableCell>
                         <TableCell class="text-right">{{ formatDate(post.created_at) }}</TableCell>
                         <TableCell class="text-right">{{ formatDate(post.updated_at) }}</TableCell>
                         <TableCell class="text-right">{{ post.published }}</TableCell>
@@ -160,7 +155,9 @@ const handleDelete = (id: number) => {
                                         <DropdownMenuItem as="button" @click="router.get(`/posts/${post.id}`)">View</DropdownMenuItem>
                                         <DropdownMenuItem as="button" @click="() => router.get(edit(post.id).url)">Edit</DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem class="text-destruvtive" as="button" @click="()=> handleDelete(post.id)">Delete</DropdownMenuItem>
+                                        <DropdownMenuItem class="text-destruvtive" as="button" @click="() => handleDelete(post.id)"
+                                            >Delete</DropdownMenuItem
+                                        >
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
@@ -168,13 +165,14 @@ const handleDelete = (id: number) => {
                     </TableRow>
                 </TableBody>
             </Table>
-            <Pagination 
-            v-slot="{ page }" 
-            :page="posts.current_page"
-            :items-per-page="posts.per_page" 
-            :total="posts.total" 
-            class="mt-2 w-full" 
-            @update:page="(page) => router.get(index().url, {page: page})">
+            <Pagination
+                v-slot="{ page }"
+                :page="posts.current_page"
+                :items-per-page="posts.per_page"
+                :total="posts.total"
+                class="mt-2 w-full"
+                @update:page="(page) => router.get(index().url, { page: page })"
+            >
                 <PaginationList v-slot="{ items }" class="flex items-center gap-1">
                     <PaginationFirst />
                     <PaginationPrevious />

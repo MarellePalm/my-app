@@ -16,7 +16,6 @@ import { create, store } from '@/routes/posts';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Posts create',
@@ -31,12 +30,12 @@ const form = useForm({
     published: false,
 });
 
-const props = defineProps<{authors: Record<number, string>;}>();
+const props = defineProps<{ authors: Record<number, string> }>();
 console.log(props.authors);
 
-const submit = ()=>{
-    form.post(store().url)
-}
+const submit = () => {
+    form.post(store().url);
+};
 </script>
 
 <template>
@@ -47,33 +46,39 @@ const submit = ()=>{
             <div class="mx-auto h-full w-full max-w-2xl p-4">
                 <h3 class="text-lg font-medium">Post Create</h3>
                 <form @submit.prevent="submit">
-                    <div class="grid gap-4 mt-6">
+                    <div class="mt-6 grid gap-4">
                         <div>
                             <Label for="title">Title</Label>
                             <Input class="mt-1" id="title" v-model="form.title" />
-                            <InputError :message="form.errors.title"/>
+                            <InputError :message="form.errors.title" />
                         </div>
                         <div>
                             <Label for="content">Content</Label>
                             <Textarea class="mt-1" id="title" v-model="form.content" />
                             <InputError :message="form.errors.content" />
                         </div>
-                            <div>
-                                <Label for="author">Author</Label>
-                                  <Select v-model="form.author_id">
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select an author" />
-                                    </SelectTrigger>
-                                    <SelectContent class="w-(--reka-select-trigger-width)">
-                                      <SelectGroup>
-                                        <SelectItem v-for="(name, id) in authors" :key="id" :value="id"> {{ name }}  </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                
-                                <!-- <Input class="mt-1" id="author_id" v-model="form.author_id" /> -->
-                                <InputError :message="form.errors.author_id"/>
-                            </div>
+                        <div>
+                            <Label for="author">Author</Label>
+                            <Select v-model="form.author_id">
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select an author (optional)" />
+                                </SelectTrigger>
+
+                                <SelectContent class="w-(--reka-select-trigger-width)">
+                                    <SelectGroup>
+                                        <!-- 👇 oluline rida -->
+                                        <SelectItem :value="null">No author</SelectItem>
+
+                                        <SelectItem v-for="(name, id) in authors" :key="id" :value="id">
+                                            {{ name }}
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+
+                            <!-- <Input class="mt-1" id="author_id" v-model="form.author_id" /> -->
+                            <InputError :message="form.errors.author_id" />
+                        </div>
                         <div class="mt-4 flex items-center space-x-2">
                             <Switch id="published" />
                             <Label for="published">Published</Label>

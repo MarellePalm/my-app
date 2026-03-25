@@ -38,7 +38,7 @@ class PostController extends Controller
        Post::create($request->validate([
         'title'=>'required|string|max:255',
         'content'=>'required|string',
-        'author_id'=> 'required|integer|exists:authors,id',
+        'author_id'=> 'nullable|integer|exists:authors,id',
         'published'=> 'boolean',
        ]));
 
@@ -77,7 +77,7 @@ class PostController extends Controller
         $validated =$request -> validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'author_id' => 'required|exists:authors,id',
+            'author_id' => 'nullable|exists:authors,id',
             'published' => 'boolean',
         ]);
 
