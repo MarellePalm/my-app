@@ -8,6 +8,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Mail\Timetable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -35,6 +36,8 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/update/{product}', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 });
 
 

@@ -22,19 +22,27 @@ const total = computed(() => {
 });
 
 const updateQuantity = (productId: number, quantity: number) => {
-    router.post(`/cart/update/${productId}`, {
-        quantity,
-    }, {
-        preserveScroll: true,
-        replace: true,
-    });
+    router.post(
+        `/cart/update/${productId}`,
+        {
+            quantity,
+        },
+        {
+            preserveScroll: true,
+            replace: true,
+        },
+    );
 };
 
 const removeFromCart = (productId: number) => {
-    router.post(`/cart/remove/${productId}`, {}, {
-        preserveScroll: true,
-        replace: true,
-    });
+    router.post(
+        `/cart/remove/${productId}`,
+        {},
+        {
+            preserveScroll: true,
+            replace: true,
+        },
+    );
 };
 </script>
 
@@ -82,6 +90,12 @@ const removeFromCart = (productId: number) => {
                     <div class="flex items-center justify-between">
                         <span class="text-lg font-semibold">Kokku:</span>
                         <span class="text-2xl font-bold">{{ total.toFixed(2) }} €</span>
+                    </div>
+
+                    <div class="mt-4">
+                        <Link href="/checkout" class="block w-full rounded-lg bg-black px-4 py-2 text-center text-white transition hover:opacity-90">
+                            Edasi maksma
+                        </Link>
                     </div>
                 </div>
             </div>
