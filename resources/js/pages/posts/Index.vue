@@ -138,7 +138,7 @@ const handleDelete = (id: number) => {
                         <TableCell>{{ post.title }}</TableCell>
                         <TableCell
                             ><span v-if="post.author"> {{ post.author.first_name }} {{ post.author.last_name }} </span>
-                            <span v-else> Autor puudub </span>
+                            <span v-else> Anonüümne </span>
                         </TableCell>
                         <TableCell class="text-right">{{ formatDate(post.created_at) }}</TableCell>
                         <TableCell class="text-right">{{ formatDate(post.updated_at) }}</TableCell>
