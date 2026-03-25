@@ -32,7 +32,7 @@ const handleSuccess = () => {
   window.location.reload()
 };
 
-const mapClick= (e:PointerEvent)=> {
+const mapClick= (e:L.LeafletMouseEvent)=> {
     selectedLocation.value = {
         lat: e.latlng.lat,
         lng: e.latlng.lng
