@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class CheckoutController extends Controller
 {
@@ -65,5 +67,30 @@ class CheckoutController extends Controller
         session()->forget('cart');
 
         return redirect()->route('shop.index')->with('success', 'Tellimus salvestatud!');
+    }
+
+    public function stripeCheckout()
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = Session::create([
+            'mode' => 'payment',
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => 'eur',
+                        'product_data' => [
+                            'name' => 'Test toode',
+                        ],
+                        'unit_amount' => 1999,
+                    ],
+                    'quantity' => 1,
+                ],
+            ],
+            'success_url' => url('/checkout'),
+            'cancel_url' => url('/checkout'),
+        ]);
+
+        return Inertia::location($session->url);
     }
 }
