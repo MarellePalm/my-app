@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Http;
 
 
 use App\Http\Controllers\MarkerController;
-
+use App\Http\Controllers\StripeWebhookController;
 
 Route::post('/markers', [MarkerController::class, 'store']);
 Route::delete('/markers/{marker}', [MarkerController::class, 'destroy']);
@@ -44,7 +44,8 @@ Route::middleware(['auth', 'verified']) ->group(function(){
 });
 
 
-
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
+    ->name('stripe.webhook');
 
 
 Route:: get('/test', function () {

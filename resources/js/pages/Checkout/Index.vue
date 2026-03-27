@@ -71,7 +71,7 @@ const payWithStripe = () => {
                         </div>
 
                         <div>
-                            <label class="mb-1 block text-sm font-medium">Perenimi</label>
+                            <label class="mb-1 block text-sm font-medium">Perekonnanimi</label>
                             <input
                                 v-model="form.last_name"
                                 type="text"
