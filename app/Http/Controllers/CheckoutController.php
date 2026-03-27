@@ -69,40 +69,72 @@ class CheckoutController extends Controller
         return redirect()->route('shop.index')->with('success', 'Tellimus salvestatud!');
     }
 
-    public function stripeCheckout()
-    {
-        $cart = session('cart', []);
+    public function stripeCheckout(Request $request)
+{
+    $cart = session()->get('cart', []);
 
-        if (empty($cart)) {
-            return back()->with('error', 'Ostukorv on tühi.');
-        }
-
-        Stripe::setApiKey(config('services.stripe.secret'));
-
-        $lineItems = [];
-
-        foreach ($cart as $item) {
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'product_data' => [
-                        'name' => $item['name'],
-                    ],
-                    'unit_amount' => (int) round($item['price'] * 100),
-                ],
-                'quantity' => $item['quantity'],
-            ];
-        }
-
-        $session = Session::create([
-            'mode' => 'payment',
-            'line_items' => $lineItems,
-            'success_url' => url('/checkout/success') . '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => url('/checkout/cancel'),
-        ]);
-
-        return Inertia::location($session->url);
+    if (empty($cart)) {
+        return back()->with('error', 'Ostukorv on tühi.');
     }
+
+    $total = collect($cart)->sum(function ($item) {
+        return $item['price'] * $item['quantity'];
+    });
+
+    $order = Order::create([
+        'first_name' => $request->input('first_name'),
+        'last_name' => $request->input('last_name'),
+        'email' => $request->input('email'),
+        'phone' => $request->input('phone'),
+        'total' => $total,
+        'payment_provider' => 'stripe',
+        'payment_status' => 'pending',
+    ]);
+
+    foreach ($cart as $item) {
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $item['id'],
+            'product_name' => $item['name'],
+            'price' => $item['price'],
+            'quantity' => $item['quantity'],
+        ]);
+    }
+
+    Stripe::setApiKey(config('services.stripe.secret'));
+
+    $lineItems = [];
+
+    foreach ($cart as $item) {
+        $lineItems[] = [
+            'price_data' => [
+                'currency' => 'eur',
+                'product_data' => [
+                    'name' => $item['name'],
+                ],
+                'unit_amount' => (int) round($item['price'] * 100),
+            ],
+            'quantity' => $item['quantity'],
+        ];
+    }
+
+    $session = Session::create([
+        'mode' => 'payment',
+        'line_items' => $lineItems,
+        'success_url' => url('/checkout/success') . '?session_id={CHECKOUT_SESSION_ID}',
+        'cancel_url' => url('/checkout/cancel'),
+        'client_reference_id' => (string) $order->id,
+        'metadata' => [
+            'order_id' => $order->id,
+        ],
+    ]);
+
+    $order->update([
+        'stripe_checkout_session_id' => $session->id,
+    ]);
+
+    return Inertia::location($session->url);
+}
 
     public function success()
     {
