@@ -44,7 +44,7 @@ const payWithStripe = () => {
     <AppLayout>
         <div class="p-6">
             <div class="mb-6 flex items-center justify-between">
-                <h1 class="text-3xl font-bold">Checkout</h1>
+                <h1 class="text-3xl font-bold">Kassa</h1>
 
                 <Link href="/cart" class="rounded-lg border px-4 py-2 text-sm"> Tagasi ostukorvi </Link>
             </div>

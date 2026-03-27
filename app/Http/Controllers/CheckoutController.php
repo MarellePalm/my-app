@@ -71,26 +71,46 @@ class CheckoutController extends Controller
 
     public function stripeCheckout()
     {
+        $cart = session('cart', []);
+
+        if (empty($cart)) {
+            return back()->with('error', 'Ostukorv on tühi.');
+        }
+
         Stripe::setApiKey(config('services.stripe.secret'));
+
+        $lineItems = [];
+
+        foreach ($cart as $item) {
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => $item['name'],
+                    ],
+                    'unit_amount' => (int) round($item['price'] * 100),
+                ],
+                'quantity' => $item['quantity'],
+            ];
+        }
 
         $session = Session::create([
             'mode' => 'payment',
-            'line_items' => [
-                [
-                    'price_data' => [
-                        'currency' => 'eur',
-                        'product_data' => [
-                            'name' => 'Test toode',
-                        ],
-                        'unit_amount' => 1999,
-                    ],
-                    'quantity' => 1,
-                ],
-            ],
-            'success_url' => url('/checkout'),
-            'cancel_url' => url('/checkout'),
+            'line_items' => $lineItems,
+            'success_url' => url('/checkout/success') . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => url('/checkout/cancel'),
         ]);
 
         return Inertia::location($session->url);
+    }
+
+    public function success()
+    {
+        return Inertia::render('Checkout/Success');
+    }
+
+    public function cancel()
+    {
+        return Inertia::render('Checkout/Cancel');
     }
 }
