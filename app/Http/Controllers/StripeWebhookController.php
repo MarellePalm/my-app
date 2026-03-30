@@ -33,7 +33,7 @@ class StripeWebhookController extends Controller
 
             $order = Order::where('stripe_checkout_session_id', $session->id)->first();
 
-            if ($order) {
+            if ($order && $order->payment_status !== 'paid') {
                 $order->update([
                     'payment_status' => 'paid',
                     'payment_provider' => 'stripe',

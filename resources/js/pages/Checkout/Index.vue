@@ -31,12 +31,7 @@ const total = computed(() => {
 const payWithStripe = () => {
     form.clearErrors();
 
-    router.post('/checkout/stripe', {
-        first_name: form.first_name,
-        last_name: form.last_name,
-        email: form.email,
-        phone: form.phone,
-    });
+    form.post('/checkout/stripe');
 };
 </script>
 
