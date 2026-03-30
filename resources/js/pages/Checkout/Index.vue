@@ -46,11 +46,13 @@ const payWithStripe = () => {
     <AppLayout>
         <div class="p-6">
             <div class="mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <Link href="/cart" class="text-2xl  text-gray-600 transition hover:text-black">
+                    ←
+                </Link>
                 <h1 class="text-3xl font-bold">Kassa</h1>
 
-                <Link href="/cart" class="rounded-lg border px-4 py-2 text-sm">
-                    Tagasi ostukorvi
-                </Link>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
