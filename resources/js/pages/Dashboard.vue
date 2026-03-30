@@ -5,7 +5,6 @@ import { dashboard } from '@/routes';
 import { WeatherData, type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,13 +29,17 @@ const props = defineProps<{
 
 const searchCity = ref('');
 function searchWeather() {
-    router.get('/dashboard', {
-        city: searchCity.value,
-    }, {
-        onSuccess: () => {
-            searchCity.value = ''
-        }
-    });
+    router.get(
+        '/dashboard',
+        {
+            city: searchCity.value,
+        },
+        {
+            onSuccess: () => {
+                searchCity.value = '';
+            },
+        },
+    );
 }
 </script>
 
@@ -64,19 +67,25 @@ function searchWeather() {
                         <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Otsi</button>
                     </form>
                 </div>
+
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <div>
-                        <Link
-                            href="/posts"
-                            class="flex h-full min-h-[280px] flex-col items-center justify-center rounded-xl border border-sidebar-border/70 bg-gradient-to-br from-white to-gray-50 text-center transition hover:scale-[1.01] hover:shadow-lg"
-                        >
-                            <span class="text-4xl font-extrabold tracking-wide">BLOGI</span>
-                            <span class="mt-3 text-sm text-gray-500">Vaata ja halda postitusi</span>
-                        </Link>
-                    </div>
+                    <Link
+                        href="/posts"
+                        class="flex h-full min-h-[280px] flex-col items-center justify-center rounded-xl border border-sidebar-border/70 bg-gradient-to-br from-white to-gray-50 text-center transition hover:scale-[1.01] hover:shadow-lg dark:from-neutral-900 dark:to-neutral-800"
+                    >
+                        <span class="text-4xl font-extrabold tracking-wide">BLOGI</span>
+                        <span class="mt-3 text-sm text-gray-500 dark:text-gray-400">Vaata ja halda postitusi</span>
+                    </Link>
                 </div>
+
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <a href="/shop">E-pood</a>
+                    <Link
+                        href="/shop"
+                        class="flex h-full min-h-[280px] flex-col items-center justify-center rounded-xl border border-sidebar-border/70 bg-gradient-to-br from-white to-gray-50 text-center transition hover:scale-[1.01] hover:shadow-lg dark:from-neutral-900 dark:to-neutral-800"
+                    >
+                        <span class="text-4xl font-extrabold tracking-wide">E-POOD</span>
+                        <span class="mt-3 text-sm text-gray-500 dark:text-gray-400">Vaata tooteid ja osta</span>
+                    </Link>
                 </div>
             </div>
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
