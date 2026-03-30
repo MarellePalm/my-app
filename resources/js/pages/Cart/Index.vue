@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 interface CartItem {
     id: number;
@@ -44,6 +44,17 @@ const removeFromCart = (productId: number) => {
         },
     );
 };
+
+const showConfirm = ref(false);
+
+const clearCart = () => {
+    showConfirm.value = false
+    
+    router.delete('/cart/clear', {
+        preserveScroll: true,
+        replace: true,
+    });
+};
 </script>
 
 <template>
@@ -52,8 +63,19 @@ const removeFromCart = (productId: number) => {
     <AppLayout>
         <div class="p-6">
             <div class="mb-6 flex items-center justify-between">
-                <h1 class="text-3xl font-bold">Ostukorv</h1>
-                <Link href="/shop" class="rounded-lg border px-4 py-2 text-sm"> Tagasi poodi </Link>
+                <div class="flex items-center gap-3">
+                    <Link href="/shop" class="text-2xl text-gray-600 transition hover:text-black"> ← </Link>
+
+                    <h1 class="text-3xl font-bold">Ostukorv</h1>
+                </div>
+
+                <button
+                    v-if="cart.length > 0"
+                    @click="showConfirm = true"
+                    class="rounded-lg bg-red-400 px-4 py-2 text-sm text-white transition hover:bg-red-600"
+                >
+                    Tühjenda ostukorv
+                </button>
             </div>
 
             <div v-if="cart.length === 0" class="rounded-xl border bg-white p-6 shadow-sm">
@@ -66,6 +88,7 @@ const removeFromCart = (productId: number) => {
 
                     <div class="flex-1">
                         <h2 class="text-lg font-semibold">{{ item.name }}</h2>
+
                         <div class="mt-2 flex items-center gap-2">
                             <label class="text-sm text-gray-500">Kogus:</label>
                             <input
@@ -76,13 +99,19 @@ const removeFromCart = (productId: number) => {
                                 @change="updateQuantity(item.id, Number(($event.target as HTMLInputElement).value))"
                             />
                         </div>
+
                         <p class="text-sm text-gray-500">Hind: {{ item.price }} €</p>
                     </div>
 
                     <div class="text-right">
                         <p class="text-lg font-bold">{{ (Number(item.price) * item.quantity).toFixed(2) }} €</p>
 
-                        <button @click="removeFromCart(item.id)" class="mt-2 rounded-md bg-red-400 px-3 py-1 text-sm text-white">Eemalda</button>
+                        <button
+                            @click="removeFromCart(item.id)"
+                            class="mt-2 rounded-md bg-red-400 px-3 py-1 text-sm text-white transition hover:bg-red-500"
+                        >
+                            Eemalda
+                        </button>
                     </div>
                 </div>
 
@@ -97,6 +126,18 @@ const removeFromCart = (productId: number) => {
                             Edasi maksma
                         </Link>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="showConfirm" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
+                <h2 class="text-lg font-semibold">Tühjenda ostukorv</h2>
+
+                <p class="mt-2 text-sm text-gray-600">Kas oled kindel, et tahad kõik tooted ostukorvist eemaldada?</p>
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <button @click="clearCart" class="rounded-lg bg-red-500 px-4 py-2 text-sm text-white hover:bg-red-600">Jah, tühjenda</button>
+                    <button @click="showConfirm = false" class="rounded-lg border px-4 py-2 text-sm">Tühista</button>
                 </div>
             </div>
         </div>

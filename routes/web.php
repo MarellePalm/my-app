@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::post('/checkout/stripe', [CheckoutController::class, 'stripeCheckout'])->name('checkout.stripe');
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+    Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 });
 
 

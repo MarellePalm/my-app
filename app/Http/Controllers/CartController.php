@@ -76,4 +76,11 @@ class CartController extends Controller
 
         return redirect()->route('cart.index');
     }
+
+    public function clear()
+    {
+        session()->forget('cart');
+
+        return redirect()->back()->with('success', 'Ostukorv tühjendati');
+    }
 }
