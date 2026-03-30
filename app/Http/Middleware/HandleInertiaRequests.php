@@ -41,10 +41,14 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'quote' => [
+                'message' => trim($message),
+                'author' => trim($author),
+            ],
             'auth' => [
                 'user' => $request->user(),
             ],
+            'cartCount' => collect(session()->get('cart', []))->sum('quantity'),
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),

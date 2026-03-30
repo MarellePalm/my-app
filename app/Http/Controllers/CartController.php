@@ -43,7 +43,7 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
-        return redirect()->route('cart.index');
+        return redirect()->back()->with('success', 'Toode lisati ostukorvi');
     }
 
     public function update(Request $request, Product $product): RedirectResponse

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { reactive } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { computed, reactive } from 'vue';
 
 interface Product {
     id: number;
@@ -21,11 +21,30 @@ const quantities = reactive<Record<number, number>>({});
 props.products.forEach((product) => {
     quantities[product.id] = 1;
 });
+
 const addToCart = (productId: number) => {
-    router.post(`/cart/add/${productId}`, {
-        quantity: quantities[productId],
-    });
+    console.log('adding product', productId);
+
+    router.post(
+        `/cart/add/${productId}`,
+        {
+            quantity: quantities[productId],
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                console.log('added successfully');
+            },
+            onError: (errors) => {
+                console.log('add to cart error', errors);
+            },
+        },
+    );
 };
+
+const page = usePage();
+const cartCount = computed(() => Number(page.props.cartCount ?? 0));
 </script>
 
 <template>
@@ -33,7 +52,20 @@ const addToCart = (productId: number) => {
 
     <AppLayout>
         <div class="p-6">
-            <h1 class="mb-6 text-3xl font-bold">E-pood</h1>
+            <div class="mb-6 flex items-center justify-between">
+                <h1 class="text-3xl font-bold">E-pood</h1>
+
+                <Link href="/cart" class="relative inline-flex items-center">
+                    <span class="text-3xl">🛒</span>
+
+                    <span
+                        v-if="cartCount > 0"
+                        class="absolute -top-2 -right-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-white shadow"
+                    >
+                        {{ cartCount }}
+                    </span>
+                </Link>
+            </div>
 
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <div v-for="product in products" :key="product.id" class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -58,6 +90,7 @@ const addToCart = (productId: number) => {
                         </div>
 
                         <button
+                            type="button"
                             @click="addToCart(product.id)"
                             class="mt-4 w-full rounded-lg bg-black px-4 py-2 text-white transition hover:opacity-90"
                         >
