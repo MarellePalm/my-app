@@ -87,6 +87,15 @@ function searchWeather() {
                         <span class="mt-3 text-sm text-gray-500 dark:text-gray-400">Vaata tooteid ja osta</span>
                     </Link>
                 </div>
+                <div>
+                    <Link
+                        href="/radiology-studies-page"
+                        class="flex h-full min-h-[280px] flex-col items-center justify-center rounded-xl border border-sidebar-border/70 bg-gradient-to-br from-white to-gray-50 text-center transition hover:scale-[1.01] hover:shadow-lg dark:from-neutral-900 dark:to-neutral-800"
+                    >
+                        <span class="text-4xl font-extrabold tracking-wide">RADIOLOOGIA</span>
+                        <span class="mt-3 text-sm text-gray-500 dark:text-gray-400">Vaata radioloogilisi uuringuid</span>
+                    </Link>
+                </div>
             </div>
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
                 <MapView :markers="markers" />

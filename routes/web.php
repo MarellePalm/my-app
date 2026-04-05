@@ -9,6 +9,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\Api\RadiologyStudyController;
 use App\Mail\Timetable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -41,6 +42,25 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::get('/radiology-studies', [RadiologyStudyController::class, 'index']);
+    Route::get('/radiology-studies/{id}', [RadiologyStudyController::class, 'show']);
+    Route::post('/radiology-studies', [RadiologyStudyController::class, 'store']);
+    
+});
+
+Route::get('/radiology-studies-page', function () {
+    return Inertia::render('RadiologyStudies/Index');
+});
+
+Route::get('/radiology-studies-page/create', function () {
+    return Inertia::render('RadiologyStudies/Create');
+});
+
+
+Route::get('/radiology-studies-page/{id}', function ($id) {
+    return Inertia::render('RadiologyStudies/Show', [
+        'id' => $id,
+    ]);
 });
 
 
