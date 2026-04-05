@@ -69,24 +69,87 @@ class RadiologyStudyController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'nullable|string|max:255',
-            'description' => 'required|string',
-            'modality' => 'required|string|max:100',
-            'body_part' => 'required|string|max:100',
-            'duration_minutes' => 'required|integer|min:1',
-            'contrast_needed' => 'nullable|boolean',
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'modality' => 'required|string|max:100',
+        'body_part' => 'required|string|max:100',
+        'duration_minutes' => 'required|integer|min:1',
+        'contrast_needed' => 'nullable|boolean',
+        'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+    ]);
 
-        $study = RadiologyStudy::create($validated);
-        Cache::flush(); 
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Radioloogiline uuring lisati edukalt.',
-            'data' => $study,
-        ], 201);
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('radiology', 'public');
+        $validated['image'] = $path;
     }
+
+    $study = RadiologyStudy::create($validated);
+
+    Cache::flush();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Radioloogiline uuring lisati edukalt.',
+        'data' => $study,
+    ], 201);
+    }
+    public function update(Request $request, $id)
+{
+    $study = RadiologyStudy::find($id);
+
+    if (! $study) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Radioloogilist uuringut ei leitud.',
+        ], 404);
+    }
+
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'modality' => 'required|string|max:100',
+        'body_part' => 'required|string|max:100',
+        'duration_minutes' => 'required|integer|min:1',
+        'contrast_needed' => 'nullable|boolean',
+        'image' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+    ]);
+
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('radiology', 'public');
+        $validated['image'] = $path;
+    }
+
+    $study->update($validated);
+
+    Cache::flush();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Radioloogiline uuring uuendati edukalt.',
+        'data' => $study,
+    ]);
+}
+
+public function destroy($id)
+{
+    $study = RadiologyStudy::find($id);
+
+    if (! $study) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Radioloogilist uuringut ei leitud.',
+        ], 404);
+    }
+
+    $study->delete();
+
+    Cache::flush();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Radioloogiline uuring kustutati edukalt.',
+    ]);
+}
 }

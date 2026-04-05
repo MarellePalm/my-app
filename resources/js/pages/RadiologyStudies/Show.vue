@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { Link } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 
 interface Study {
     id: number
@@ -40,18 +40,48 @@ const fetchStudy = async () => {
 onMounted(() => {
     fetchStudy()
 })
+
+const deleteStudy = async () => {
+    const confirmed = confirm('Kas oled kindel, et soovid selle uuringu kustutada?')
+
+    if (!confirmed) return
+
+    try {
+        await axios.delete(`/radiology-studies/${props.id}`)
+        router.visit('/radiology-studies-page')
+    } catch (err) {
+        error.value = 'Uuringu kustutamine ebaõnnestus.'
+        console.error(err)
+    }
+}
 </script>
 
 <template>
     <div class="mx-auto max-w-4xl p-6">
-        <div class="mb-6">
-            <Link
-                href="/radiology-studies-page"
-                class="text-sm text-blue-600 hover:underline"
-            >
-                ← Tagasi uuringute juurde
-            </Link>
-        </div>
+        <div class="mb-6 flex items-center justify-between">
+    <Link
+        href="/radiology-studies-page"
+        class="text-sm text-blue-600 hover:underline"
+    >
+        ← Tagasi uuringute juurde
+    </Link>
+
+    <div class="flex gap-2">
+        <Link
+            :href="`/radiology-studies-page/${props.id}/edit`"
+            class="rounded-md bg-yellow-500 px-4 py-2 text-sm text-white hover:bg-yellow-600"
+        >
+            Muuda
+        </Link>
+
+        <button
+            @click="deleteStudy"
+            class="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+        >
+            Kustuta
+        </button>
+    </div>
+</div>
 
         <div v-if="loading" class="rounded-md border bg-gray-50 p-4 text-gray-600">
             Laen uuringut...
@@ -64,9 +94,9 @@ onMounted(() => {
         <div v-else-if="study" class="rounded-xl border bg-white p-6 shadow-sm">
             <img
                 v-if="study.image"
-                :src="`/${study.image}`"
+                :src="`/storage/${study.image}`"
                 :alt="study.title"
-                class="mb-6 h-72 w-full rounded-lg object-cover"
+                class="mx-auto max-h-[500px] w-full object-contain"
             />
 
             <h1 class="text-3xl font-bold">

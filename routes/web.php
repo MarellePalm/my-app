@@ -45,6 +45,8 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::get('/radiology-studies', [RadiologyStudyController::class, 'index']);
     Route::get('/radiology-studies/{id}', [RadiologyStudyController::class, 'show']);
     Route::post('/radiology-studies', [RadiologyStudyController::class, 'store']);
+    Route::put('/radiology-studies/{id}', [RadiologyStudyController::class, 'update']);
+    Route::delete('/radiology-studies/{id}', [RadiologyStudyController::class, 'destroy']);
     
 });
 
@@ -56,7 +58,11 @@ Route::get('/radiology-studies-page/create', function () {
     return Inertia::render('RadiologyStudies/Create');
 });
 
-
+Route::get('/radiology-studies-page/{id}/edit', function ($id) {
+    return Inertia::render('RadiologyStudies/Edit', [
+        'id' => $id,
+    ]);
+});
 Route::get('/radiology-studies-page/{id}', function ($id) {
     return Inertia::render('RadiologyStudies/Show', [
         'id' => $id,
