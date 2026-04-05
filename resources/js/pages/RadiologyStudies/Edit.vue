@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
-import axios from 'axios'
-import { Link, router } from '@inertiajs/vue3'
+import { reactive, ref, onMounted } from 'vue';
+import axios from 'axios';
+import { Link, router } from '@inertiajs/vue3';
 
 const props = defineProps<{
-    id: string
-}>()
+    id: string;
+}>();
 
-const loading = ref(false)
-const pageLoading = ref(false)
-const error = ref('')
-const success = ref('')
+const loading = ref(false);
+const pageLoading = ref(false);
+const error = ref('');
+const success = ref('');
+const image = ref<File | null>(null);
 
 const form = reactive({
     title: '',
@@ -20,58 +21,91 @@ const form = reactive({
     body_part: '',
     duration_minutes: 1,
     contrast_needed: false,
-})
+});
+
+const getImageUrl = (imagePath: string | null) => {
+    if (!imagePath) return '';
+
+    if (
+        imagePath.startsWith('http://') ||
+        imagePath.startsWith('https://') ||
+        imagePath.startsWith('/storage/')
+    ) {
+        return imagePath;
+    }
+
+    return `/storage/${imagePath.replace(/^\/+/, '')}`;
+};
+
+const handleImageChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+
+    if (target.files && target.files.length > 0) {
+        image.value = target.files[0];
+    }
+};
 
 const fetchStudy = async () => {
-    pageLoading.value = true
-    error.value = ''
+    pageLoading.value = true;
+    error.value = '';
 
     try {
-        const response = await axios.get(`/radiology-studies/${props.id}`)
-        const study = response.data.data
+        const response = await axios.get(`/radiology-studies/${props.id}`);
+        const study = response.data.data;
 
-        form.title = study.title
-        form.image = study.image ?? ''
-        form.description = study.description
-        form.modality = study.modality
-        form.body_part = study.body_part
-        form.duration_minutes = study.duration_minutes
-        form.contrast_needed = study.contrast_needed
+        form.title = study.title;
+        form.image = study.image ?? '';
+        form.description = study.description;
+        form.modality = study.modality;
+        form.body_part = study.body_part;
+        form.duration_minutes = study.duration_minutes;
+        form.contrast_needed = !!study.contrast_needed;
     } catch (err) {
-        error.value = 'Uuringu andmete laadimine ebaõnnestus.'
-        console.error(err)
+        error.value = 'Uuringu andmete laadimine ebaõnnestus.';
+        console.error(err);
     } finally {
-        pageLoading.value = false
+        pageLoading.value = false;
     }
-}
+};
 
 const submitForm = async () => {
-    loading.value = true
-    error.value = ''
-    success.value = ''
+    loading.value = true;
+    error.value = '';
+    success.value = '';
 
     try {
-        await axios.put(`/radiology-studies/${props.id}`, {
-            ...form,
-            contrast_needed: form.contrast_needed ? 1 : 0,
-        })
+        const formData = new FormData();
 
-        success.value = 'Uuring uuendati edukalt.'
+        formData.append('title', form.title);
+        formData.append('description', form.description);
+        formData.append('modality', form.modality);
+        formData.append('body_part', form.body_part);
+        formData.append('duration_minutes', String(form.duration_minutes));
+        formData.append('contrast_needed', form.contrast_needed ? '1' : '0');
+        formData.append('_method', 'PUT');
+
+        if (image.value) {
+            formData.append('image', image.value);
+        }
+
+        await axios.post(`/radiology-studies/${props.id}`, formData);
+
+        success.value = 'Uuring uuendati edukalt.';
 
         setTimeout(() => {
-            router.visit(`/radiology-studies-page/${props.id}`)
-        }, 800)
+            router.visit(`/radiology-studies-page/${props.id}`);
+        }, 800);
     } catch (err: any) {
-        error.value = 'Uuringu uuendamine ebaõnnestus.'
-        console.error(err)
+        error.value = 'Uuringu uuendamine ebaõnnestus.';
+        console.error(err);
     } finally {
-        loading.value = false
+        loading.value = false;
     }
-}
+};
 
 onMounted(() => {
-    fetchStudy()
-})
+    fetchStudy();
+});
 </script>
 
 <template>
@@ -106,9 +140,28 @@ onMounted(() => {
                     <input v-model="form.title" type="text" class="w-full rounded-md border px-3 py-2" required />
                 </div>
 
+                <div v-if="form.image">
+                    <label class="mb-1 block text-sm font-medium">Praegune pilt</label>
+                    <div class="rounded-lg border bg-gray-50 p-3">
+                        <img
+                            :src="getImageUrl(form.image)"
+                            :alt="form.title"
+                            class="mx-auto max-h-[400px] w-full object-contain"
+                        />
+                    </div>
+                </div>
+
                 <div>
-                    <label class="mb-1 block text-sm font-medium">Pildi aadress</label>
-                    <input v-model="form.image" type="text" class="w-full rounded-md border px-3 py-2" />
+                    <label class="mb-1 block text-sm font-medium">Vali uus pilt</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        @change="handleImageChange"
+                        class="w-full rounded-md border px-3 py-2"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">
+                        Kui uut pilti ei vali, jääb olemasolev pilt alles.
+                    </p>
                 </div>
 
                 <div>
