@@ -97,7 +97,7 @@ function searchWeather() {
                     </Link>
                 </div>
             </div>
-            <div class="relative h-[400px] rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+            <div class="relative h-[500px] rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                 <MapView :markers="markers" />
             </div>
         </div>

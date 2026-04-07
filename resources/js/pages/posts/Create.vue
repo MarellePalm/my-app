@@ -14,7 +14,7 @@ import Textarea from '@/components/ui/textarea/Textarea.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { create, store } from '@/routes/posts';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -43,7 +43,16 @@ const submit = () => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div class="mb-4">
+    <Link
+        href="/posts"
+        class="inline-block rounded bg-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-300"
+    >
+        ← Tagasi
+    </Link>
+</div>
             <div class="mx-auto h-full w-full max-w-2xl p-4">
+                
                 <h3 class="text-lg font-medium">Post Create</h3>
                 <form @submit.prevent="submit">
                     <div class="mt-6 grid gap-4">
