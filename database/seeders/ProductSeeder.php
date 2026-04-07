@@ -15,6 +15,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-MUG-001',
                 'description' => 'Kruus tekstiga "Trust me, I can see inside you".',
                 'price' => 12.99,
+                'stock_quantity' => 350,
                 'image' => 'products/mug.jpg',
             ],
             [
@@ -22,6 +23,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-TOTE-002',
                 'description' => 'Kandekott röntgenkäe kujundusega.',
                 'price' => 18.50,
+                'stock_quantity' => 350,
                 'image' => 'products/tote.jpg',
             ],
             [
@@ -29,6 +31,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-NOTE-003',
                 'description' => 'Minimalistlik märkmik radioloogia teemaga.',
                 'price' => 9.99,
+                'stock_quantity' => 350,
                 'image' => 'products/notebook.jpg',
             ],
             [
@@ -36,6 +39,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-MOUSE-004',
                 'description' => 'Hiirematt CT scan kujundusega.',
                 'price' => 11.99,
+                'stock_quantity' => 350,
                 'image' => 'products/mousepad.jpg',
             ],
             [
@@ -43,6 +47,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-STICK-005',
                 'description' => 'Kleebiste komplekt radioloogia teemal.',
                 'price' => 6.99,
+                'stock_quantity' => 350,
                 'image' => 'products/stickers.jpg',
             ],
             [
@@ -50,6 +55,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-POSTER-006',
                 'description' => 'Dekoratiivne MRI kujutisega poster.',
                 'price' => 14.99,
+                'stock_quantity' => 350,
                 'image' => 'products/poster.jpg',
             ],
             [
@@ -57,6 +63,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-KEY-007',
                 'description' => 'Väike võtmehoidja radioloogia kujundusega.',
                 'price' => 5.99,
+                'stock_quantity' => 350,
                 'image' => 'products/keychain.jpg',
             ],
             [
@@ -64,6 +71,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-DESK-008',
                 'description' => 'Suur lauamatt inimese anatoomia skeemiga.',
                 'price' => 22.99,
+                'stock_quantity' => 350,
                 'image' => 'products/deskmat.jpg',
             ],
             [
@@ -71,6 +79,7 @@ class ProductSeeder extends Seeder
                 'sku' => 'RAD-BOTTLE-009',
                 'description' => 'Termospudel radioloogia kujundusega.',
                 'price' => 19.99,
+                'stock_quantity' => 350,
                 'image' => 'products/bottle.jpg',
             ],
         ];

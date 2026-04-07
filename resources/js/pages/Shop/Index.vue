@@ -86,7 +86,13 @@ const cartCount = computed(() => Number(page.props.cartCount ?? 0));
 
                         <div class="mt-4 flex items-center gap-2">
                             <label class="text-sm text-gray-600">Kogus:</label>
-                            <input v-model="quantities[product.id]" type="number" min="1" :max="product.stock_quantity" />
+                            <input
+                                v-model.number="quantities[product.id]"
+                                type="number"
+                                min="1"
+                                :max="product.stock_quantity"
+                                class="w-20 rounded border px-2 py-1"
+                            />
                         </div>
 
                         <button
