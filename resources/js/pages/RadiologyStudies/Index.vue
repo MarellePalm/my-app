@@ -28,7 +28,7 @@ const modality = ref('');
 const bodyPart = ref('');
 const sortBy = ref('');
 const direction = ref('asc');
-const limit = ref(10);
+const limit = ref('');
 
 const fetchStudies = async () => {
     loading.value = true;
@@ -69,7 +69,7 @@ const resetFilters = () => {
     bodyPart.value = '';
     sortBy.value = '';
     direction.value = 'asc';
-    limit.value = 10;
+    limit.value = '';
 };
 const getImageUrl = (image: string | null) => {
     if (!image) return '';
@@ -191,6 +191,7 @@ const getImageUrl = (image: string | null) => {
                             v-model="limit"
                             class="rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         >
+                            <option value="">Kõik</option>    
                             <option :value="5">5</option>
                             <option :value="10">10</option>
                             <option :value="20">20</option>
