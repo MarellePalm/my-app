@@ -80,7 +80,6 @@ const getImageUrl = (image: string | null) => {
 
     return `/storage/${image}`;
 };
-
 </script>
 
 <template>
@@ -98,7 +97,14 @@ const getImageUrl = (image: string | null) => {
 
                     <div>
                         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Radioloogilised uuringud</h1>
-                        <p class="mt-1 text-sm text-gray-600">Sirvi, filtreeri ja halda radioloogiliste uuringute infot.</p>
+                        <p class="mt-1 text-sm text-gray-600 py-5">Sirvi, filtreeri ja halda radioloogiliste uuringute infot.</p>
+                        <a
+                            href="/api/radiology-studies"
+                            
+                            class="inline-block rounded-lg bg-blue-600 px-10 py-2 text-white hover:bg-blue-700"
+                        >
+                            Ava JSON API
+                        </a>
                     </div>
                 </div>
 
@@ -149,7 +155,7 @@ const getImageUrl = (image: string | null) => {
                             class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         >
                             <option value="">Kõik</option>
-                           <option value="PEA">PEA</option>
+                            <option value="PEA">PEA</option>
                             <option value="KAEL">KAEL</option>
                             <option value="RINDKERE">RINDKERE</option>
                             <option value="KÕHT">KÕHT</option>
@@ -191,7 +197,7 @@ const getImageUrl = (image: string | null) => {
                             v-model="limit"
                             class="rounded-lg border border-gray-300 px-3 py-2.5 text-sm shadow-sm transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         >
-                            <option value="">Kõik</option>    
+                            <option value="">Kõik</option>
                             <option :value="5">5</option>
                             <option :value="10">10</option>
                             <option :value="20">20</option>
@@ -235,14 +241,12 @@ const getImageUrl = (image: string | null) => {
                     class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 >
                     <div v-if="study.image" class="h-52 w-full overflow-hidden bg-gray-100">
-
                         <img v-if="study.image" :src="getImageUrl(study.image)" :alt="study.title" class="h-full w-full object-cover" />
                     </div>
 
                     <div v-else class="flex h-52 items-center justify-center bg-gray-100 text-sm text-gray-400">Pilti pole lisatud</div>
 
                     <div class="p-5">
-                        
                         <div class="mb-3 flex flex-wrap gap-2">
                             <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
                                 {{ study.modality }}

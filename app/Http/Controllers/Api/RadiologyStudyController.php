@@ -20,7 +20,7 @@ class RadiologyStudyController extends Controller
     ]));
 
     $studies = Cache::remember($cacheKey, 60, function () use ($request) {
-        $query = RadiologyStudy::query();
+        $query = RadiologyStudy::with('user');
 
         // SEARCH
         if ($request->filled('search')) {
@@ -44,6 +44,12 @@ class RadiologyStudyController extends Controller
             if (in_array($request->sort_by, ['title', 'duration_minutes'])) {
                 $query->orderBy($request->sort_by, $direction);
             }
+        }
+
+        if ($request->filled('author')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->author . '%');
+            });
         }
 
         // LIMIT
