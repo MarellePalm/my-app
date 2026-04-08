@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Api\RadiologyStudyController;
+use App\Http\Controllers\ExternalApiController;
 use App\Mail\Timetable;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -42,6 +43,7 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::get('/external-api/{name}', ExternalApiController::class);
     
 });
 
