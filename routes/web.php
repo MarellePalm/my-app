@@ -42,11 +42,6 @@ Route::middleware(['auth', 'verified']) ->group(function(){
     Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-    Route::get('/radiology-studies', [RadiologyStudyController::class, 'index']);
-    Route::get('/radiology-studies/{id}', [RadiologyStudyController::class, 'show']);
-    Route::post('/radiology-studies', [RadiologyStudyController::class, 'store']);
-    Route::put('/radiology-studies/{id}', [RadiologyStudyController::class, 'update']);
-    Route::delete('/radiology-studies/{id}', [RadiologyStudyController::class, 'destroy']);
     
 });
 
