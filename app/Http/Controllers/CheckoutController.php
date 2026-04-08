@@ -101,25 +101,39 @@ class CheckoutController extends Controller
     }
 
     public function success(Request $request)
-    {
-        $sessionId = $request->query('session_id');
+{
+    $sessionId = $request->query('session_id');
 
-        $order = Order::where('stripe_checkout_session_id', $sessionId)->firstOrFail();
-
-        if ($order->payment_status === 'paid') {
-            session()->forget('cart');
-        }
-
-        return Inertia::render('Checkout/Success', [
-            'order' => [
-                'id' => $order->id,
-                'order_number' => 'ORD-' . str_pad((string) $order->id, 6, '0', STR_PAD_LEFT),
-                'total' => $order->total,
-                'payment_status' => $order->payment_status,
-                'paid_at' => $order->paid_at,
-            ],
-        ]);
+    if (!$sessionId) {
+        abort(404);
     }
+
+    Stripe::setApiKey(config('services.stripe.secret'));
+
+    $stripeSession = Session::retrieve($sessionId);
+
+    $order = Order::where('stripe_checkout_session_id', $sessionId)->firstOrFail();
+
+    if ($stripeSession->payment_status === 'paid') {
+
+        $order->update([
+            'payment_status' => 'paid',
+            'paid_at' => now(),
+        ]);
+
+        session()->forget('cart');
+    }
+
+    return Inertia::render('Checkout/Success', [
+        'order' => [
+            'id' => $order->id,
+            'order_number' => 'ORD-' . str_pad((string) $order->id, 6, '0', STR_PAD_LEFT),
+            'total' => $order->total,
+            'payment_status' => $order->fresh()->payment_status,
+            'paid_at' => $order->fresh()->paid_at,
+        ],
+    ]);
+}
 
     public function cancel()
     {

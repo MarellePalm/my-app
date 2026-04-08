@@ -81,7 +81,7 @@ const cartCount = computed(() => Number(page.props.cartCount ?? 0));
                         <div class="mt-4 space-y-1">
                             <p class="text-lg font-bold">{{ product.price }} €</p>
                             <p class="text-sm text-gray-500">SKU: {{ product.sku }}</p>
-                            <p class="text-sm text-gray-500">Laos: {{ product.stock_quantity }}</p>
+                            <!-- <p class="text-sm text-gray-500">Laos: {{ product.stock_quantity }}</p>  -->
                         </div>
 
                         <div class="mt-4 flex items-center gap-2">
