@@ -35,7 +35,7 @@ const fetchStudies = async () => {
     error.value = '';
 
     try {
-        const response = await axios.get<ApiResponse>('/radiology-studies', {
+        const response = await axios.get<ApiResponse>('/api/radiology-studies', {
             params: {
                 search: search.value,
                 modality: modality.value,

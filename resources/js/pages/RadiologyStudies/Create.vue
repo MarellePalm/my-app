@@ -44,7 +44,7 @@ const submitForm = async () => {
             formData.append('image', image.value);
         }
 
-        await axios.post('/radiology-studies', formData, {
+        await axios.post('/api/radiology-studies', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
