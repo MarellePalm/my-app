@@ -9,8 +9,15 @@ use Illuminate\Support\Facades\Cache;
 class RadiologyStudyController extends Controller
 {
     public function index(Request $request)
-{
-    $cacheKey = 'radiology_studies_' . md5(json_encode($request->all()));
+    {
+        $cacheKey = 'radiology_studies_' . md5(json_encode([
+            'search' => $request->search,
+            'modality' => $request->modality,
+            'body_part' => $request->body_part,
+            'sort_by' => $request->sort_by,
+            'direction' => $request->direction,
+            'limit' => $request->limit,
+    ]));
 
     $studies = Cache::remember($cacheKey, 60, function () use ($request) {
         $query = RadiologyStudy::query();
