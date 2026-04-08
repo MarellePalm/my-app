@@ -69,7 +69,7 @@ const cartCount = computed(() => Number(page.props.cartCount ?? 0));
 
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <div v-for="product in products" :key="product.id" class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                    <img :src="`/storage/${product.image}`" :alt="product.name" class="h-48 w-full object-cover" />
+                    <img :src="`/${product.image}`" :alt="product.name" class="h-48 w-full object-cover" />
 
                     <div class="p-4">
                         <h2 class="text-xl font-semibold">{{ product.name }}</h2>
