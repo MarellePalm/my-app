@@ -17,6 +17,7 @@ class RadiologyStudyController extends Controller
             'sort_by' => $request->sort_by,
             'direction' => $request->direction,
             'limit' => $request->limit,
+            'author' => $request->author,
     ]));
 
     $studies = Cache::remember($cacheKey, 60, function () use ($request) {
